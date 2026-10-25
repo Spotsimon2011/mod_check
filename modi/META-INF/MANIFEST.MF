@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Stonecutter-Plugin-Version: 0.10-alpha.3
+Stonecutter-Gradle-Version: 9.5.1
+Stonecutter-Node-Project: 1.21.1-neoforge
+Stonecutter-Node-Version: 1.21.1
+Multi-Release: true
+
