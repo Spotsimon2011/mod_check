@@ -46,7 +46,7 @@ dependencies {
     // Minecraft Transit Railway for NeoForge 1.21.1.
     // Put the MTR jar (the real jar, not the Git LFS pointer file) into ./libs/
     compileOnly fileTree(dir: 'libs', include: ['*.jar'])
-    RuntimeOnly fileTree(dir: 'libs', include: ['*.jar'])
+    runtimeOnly fileTree(dir: 'libs', include: ['*.jar'])
 
     // Alternative to the jar: a folder of extracted MTR classes (e.g. the repo's `modi/` folder).
     // Pass it with:  ./gradlew build -PmtrClasses=/path/to/modi
