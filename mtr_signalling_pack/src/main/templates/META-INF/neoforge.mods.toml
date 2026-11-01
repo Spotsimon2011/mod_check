@@ -1,0 +1,35 @@
+modLoader = "javafml"
+loaderVersion = "[4,)"
+license = "MIT"
+
+[[mods]]
+modId = "${mod_id}"
+version = "${mod_version}"
+displayName = "${mod_name}"
+authors = "${mod_authors}"
+description = '''
+Add-on for Minecraft Transit Railway. Adds light signals using the aspect systems of
+Poland (PKP), Slovakia (ZSR), Czechia (SZ) and Germany (Ks), and the Signalling Tablet
+for choosing a signal's system and forcing an aspect.
+'''
+
+[[dependencies.${mod_id}]]
+modId = "neoforge"
+type = "required"
+versionRange = "[21.1,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "minecraft"
+type = "required"
+versionRange = "[1.21.1,1.21.2)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "mtr"
+type = "required"
+versionRange = "[4,)"
+ordering = "AFTER"
+side = "BOTH"
