@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "mtrsignals:block/sign_distant_marker_arrows",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "mtrsignals:block/sign_distant_marker_arrows",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "mtrsignals:block/sign_distant_marker_arrows",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "mtrsignals:block/sign_distant_marker_arrows",
+      "y": 270
+    }
+  }
+}

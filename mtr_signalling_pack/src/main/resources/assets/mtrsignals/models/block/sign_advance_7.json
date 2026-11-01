@@ -1,0 +1,7 @@
+{
+  "parent": "mtrsignals:block/lineside_sign",
+  "textures": {
+    "plate": "mtrsignals:block/sign_advance_7",
+    "particle": "mtrsignals:block/sign_advance_7"
+  }
+}

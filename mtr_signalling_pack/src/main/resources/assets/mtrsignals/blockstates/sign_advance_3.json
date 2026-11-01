@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "mtrsignals:block/sign_advance_3",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "mtrsignals:block/sign_advance_3",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "mtrsignals:block/sign_advance_3",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "mtrsignals:block/sign_advance_3",
+      "y": 270
+    }
+  }
+}

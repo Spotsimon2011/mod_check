@@ -1,0 +1,63 @@
+# Builds the add-on jar on GitHub's servers.
+#
+# Put the project folder `mtr_signalling_pack/` into the root of your `mod_check` repo and copy this file to
+# `<repo root>/.github/workflows/build-signalling-pack.yml`.
+#
+# The workflow needs MTR to compile against. It uses, in this order:
+#   1. a real MTR jar (bigger than 1 MB) found in the repo or in libs/
+#   2. the extracted MTR classes folder `modi/` (the one already in the mod_check repo)
+name: Build Signalling Pack
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Locate project and MTR
+        id: locate
+        shell: bash
+        run: |
+          if [ -f mtr_signalling_pack/build.gradle ]; then DIR=mtr_signalling_pack; else DIR=.; fi
+          echo "dir=$DIR" >> "$GITHUB_OUTPUT"
+          mkdir -p "$DIR/libs"
+          echo "Files in repo root:"; ls -la
+          MTR_ARGS=""
+          JAR=$(find . -maxdepth 3 -name '*.jar' -size +1000k -not -path './.git/*' | head -n1)
+          if [ -n "$JAR" ]; then
+            echo "Using MTR jar: $JAR"
+            cp "$JAR" "$DIR/libs/"
+          else
+            CLASSES=$(find . -maxdepth 3 -type d -name modi -not -path './.git/*' | head -n1)
+            if [ -n "$CLASSES" ] && [ -d "$CLASSES/org/mtr" ]; then
+              echo "No real MTR jar (probably a Git LFS pointer). Using extracted classes: $CLASSES"
+              MTR_ARGS="-PmtrClasses=$(realpath "$CLASSES")"
+            else
+              echo "::error::Found neither a real MTR jar nor an extracted MTR classes folder (modi/org/mtr)."
+              exit 1
+            fi
+          fi
+          echo "mtr_args=$MTR_ARGS" >> "$GITHUB_OUTPUT"
+
+      - name: Build
+        working-directory: ${{ steps.locate.outputs.dir }}
+        run: chmod +x gradlew && ./gradlew build --no-daemon --stacktrace ${{ steps.locate.outputs.mtr_args }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mtrsignals-jar
+          path: ${{ steps.locate.outputs.dir }}/build/libs/*.jar
+          if-no-files-found: error

@@ -1,0 +1,77 @@
+plugins {
+    id 'java-library'
+    // ModDevGradle: the official NeoForge 1.21.x dev plugin. If Gradle cannot resolve this
+    // exact version, pick the newest 2.0.x from https://plugins.gradle.org/plugin/net.neoforged.moddev
+    id 'net.neoforged.moddev' version '2.0.78'
+}
+
+version = mod_version
+group = mod_group_id
+
+base {
+    archivesName = mod_id
+}
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(21)
+}
+
+neoForge {
+    // If this exact NeoForge build is not found, use any 21.1.x listed at
+    // https://projects.neoforged.net/neoforged/neoforge (MTR targets Minecraft 1.21.1).
+    version = project.neo_version
+
+    runs {
+        client {
+            client()
+        }
+        server {
+            server()
+            programArgument '--nogui'
+        }
+    }
+
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Minecraft Transit Railway for NeoForge 1.21.1.
+    // Put the MTR jar (the real jar, not the Git LFS pointer file) into ./libs/
+    compileOnly fileTree(dir: 'libs', include: ['*.jar'])
+    runtimeOnly fileTree(dir: 'libs', include: ['*.jar'])
+
+    // Alternative to the jar: a folder of extracted MTR classes (e.g. the repo's `modi/` folder).
+    // Pass it with:  ./gradlew build -PmtrClasses=/path/to/modi
+    if (project.hasProperty('mtrClasses')) {
+        compileOnly files(project.property('mtrClasses'))
+    }
+}
+
+// Fill ${...} placeholders in neoforge.mods.toml
+var generateModMetadata = tasks.register('generateModMetadata', ProcessResources) {
+    var replaceProperties = [
+            mod_id     : mod_id,
+            mod_name   : mod_name,
+            mod_version: mod_version,
+            mod_authors: mod_authors,
+            neo_version: neo_version
+    ]
+    inputs.properties replaceProperties
+    expand replaceProperties
+    from 'src/main/templates'
+    into 'build/generated/sources/modMetadata'
+}
+sourceSets.main.resources.srcDir generateModMetadata
+neoForge.ideSyncTask generateModMetadata
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
